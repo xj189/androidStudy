@@ -11,6 +11,8 @@ import com.style.entity.UserInfo
 import com.style.framework.R
 import com.style.framework.databinding.ActivityLoginBinding
 import example.home.MainActivity
+import missing.namespace.R
+import missing.namespace.databinding.ActivityLoginBinding
 
 class LoginActivity : BaseActivity() {
 
@@ -21,7 +23,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(arg0: Bundle?) {
         super.onCreate(arg0)
         bd = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(bd.root)
+        setContentView(bd.root) 
         setFullScreenStableDarkMode(false)
 
         val digits = getContext().getString(R.string.digits_password)

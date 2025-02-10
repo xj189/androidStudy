@@ -14,7 +14,6 @@ import android.provider.Settings;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import android.view.View;
-
 import com.style.base.BaseTitleBarActivity;
 import com.style.framework.R;
 import com.style.framework.databinding.LocationActivityBinding;

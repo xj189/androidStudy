@@ -13,16 +13,14 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 android {
     compileSdkVersion ANDROID_COMPILE_SDK_VERSION
     //buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
-    //每个产品公共属性
     defaultConfig {
         applicationId "com.style.framework"
         minSdkVersion ANDROID_MIN_SDK_VERSION
         targetSdkVersion ANDROID_TARGET_SDK_VERSION
         versionCode 7
         versionName '1.1.7'
-        multiDexEnabled true //突破应用方法数65535的一个限制
+        multiDexEnabled true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        //不配置会根据连接手机加载对应cpu类型so库
         ndk {
             //moduleName "helloNDK"
             abiFilters "armeabi-v7a"//, "armeabi", "arm64-v8a"
@@ -37,8 +35,6 @@ android {
             //cppFlags "-frtti -fexceptions"
         }
     }
-    //多维度
-    flavorDimensions "model", "version"
     productFlavors {
         /*_sharp_S2 {
             dimension "model"
@@ -83,7 +79,6 @@ android {
             debuggable true
             jniDebuggable true
             minifyEnabled false
-            zipAlignEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
@@ -119,11 +114,14 @@ android {
     buildFeatures {
         dataBinding true
         viewBinding true
+        flavorDimensions = ["model", "version"]
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    ndkVersion '27.0.12077973'
 
 }
 
@@ -137,10 +135,11 @@ dependencies {
     implementation 'androidx.multidex:multidex-instrumentation:2.0.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-android:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

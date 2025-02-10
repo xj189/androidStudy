@@ -1,5 +1,8 @@
 
 buildscript {
+    ext {
+        agp_version = '8.7.3'
+    }
     ext.kotlin_version = '1.6.10'
 
     repositories {
@@ -9,7 +12,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath "com.android.tools.build:gradle:$agp_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -48,6 +51,6 @@ ext {
     glide_version = "4.9.0"
     gson_version = "2.8.6"
     json_version = "1.2.58"
-    rxjava_version = "2.2.8"
-    rxandroid_version = "2.1.1"
+    rxjava_version = "3.1.5"
+    rxandroid_version = "3.0.2"
 }

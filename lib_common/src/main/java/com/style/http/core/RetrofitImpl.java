@@ -54,7 +54,7 @@ public final class RetrofitImpl {
         Retrofit mRetrofit = new Retrofit.Builder()
                 .baseUrl(AssembleConfig.URL_BASE)
                 .addConverterFactory(CustomConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//添加rxjava转换器
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(mOkHttpClient)
                 .build();
         return mRetrofit;

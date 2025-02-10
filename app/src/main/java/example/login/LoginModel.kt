@@ -19,7 +19,7 @@ import kotlin.experimental.and
 class LoginModel(application: Application) : BaseViewModel(application) {
 
     var user = MutableLiveData<UserInfo>()
-    var loginState = MutableLiveData<Boolean>()
+    val loginState = MutableLiveData<Boolean>()
 
     fun login() {
 

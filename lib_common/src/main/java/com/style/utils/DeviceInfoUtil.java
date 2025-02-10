@@ -97,13 +97,10 @@ public class DeviceInfoUtil {
         return metric;
     }
 
-    //获取状态栏高度(竖屏时),有的手机竖屏时状态栏高度要高一些
     public static int getStatusHeight(Context context) {
         int statusBarHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, context.getResources().getDisplayMetrics());
-        //获取status_bar_height资源的ID
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            //根据资源ID获取响应的尺寸值
             statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
         }
         Log.i(TAG, "状态栏-高度:" + statusBarHeight);

@@ -33,15 +33,15 @@ public final class UserNetSourceImpl {
         return mObservable.compose(RxSchedulers.applySchedulers());
     }
 
-    public static Observable<List<KuaiDi>> getPupil(String guardianId) {
+    public static Observable<List<KuaiDi>> getkuaidi(String id) {
         JSONObject o = new JSONObject();
         try {
-            o.put("GuardianId", guardianId);
+            o.put("Id", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), o.toString());
-        return mAPI.getPupil(requestBody);
+        return mAPI.getkuaidi(requestBody);
     }
 
     public static Observable<BaseDataResponse<TokenResponse>> getToken() {

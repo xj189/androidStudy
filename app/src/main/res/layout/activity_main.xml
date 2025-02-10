@@ -60,9 +60,7 @@
                 <TextView
                     android:id="@+id/view_home_tap_1"
                     style="@style/image_main_tap_size"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="7.5dp"
+                    android:layout_centerInParent="true"
                     android:background="@drawable/tab_chat_bg" />
 
                 <com.style.view.other.CustomNotifyView

@@ -70,7 +70,7 @@ class MainActivity : BaseActivity() {
         appStateReceiver = DeviceStateBroadcastReceiver()
         val filter = IntentFilter(NET_CHANGE)
         filter.addAction(Intent.ACTION_SCREEN_ON)//屏幕点亮
-        filter.addAction(Intent.ACTION_SCREEN_OFF)//屏幕关闭,会有延迟，如果刚好这个时候启动activity也会造成崩溃
+        filter.addAction(Intent.ACTION_SCREEN_OFF)//屏幕关闭,会有延迟，如果刚好这个时候启动activity会造成崩溃
         filter.addAction(Intent.ACTION_USER_PRESENT)//用户解锁
         registerReceiver(appStateReceiver, filter)
         isRegisterBroadcastReceiver = true

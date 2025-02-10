@@ -12,10 +12,6 @@ import okio.BufferedSource;
 import okio.Okio;
 import retrofit2.Converter;
 
-/**
- * 一般返回格式转换器
- */
-
 public class DefaultResponseConverter<T> implements Converter<ResponseBody, T> {
     private Type type;
 

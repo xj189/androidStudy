@@ -164,7 +164,7 @@ public class CustomCertUtil {
         public boolean verify(String hostname, SSLSession session) {
             Log.e("verify", hostname);
             HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
-            boolean result = hv.verify("watch.lemonnc.com", session);
+            boolean result = hv.verify("xxxx.mmmmm.com", session);
             return result;
         }
     }

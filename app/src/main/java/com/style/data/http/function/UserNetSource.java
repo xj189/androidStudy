@@ -28,17 +28,17 @@ public interface UserNetSource {
     @POST("/app/changePsd.html")
     Observable<BaseDataResponse<LoginBean>> login(@Field("userName") String name, @Field("password") String password);
 
-    @POST("guardian/pupillus")
-    Observable<List<KuaiDi>> getPupil(@Body RequestBody requestBody);
+    @POST("kuaidi")
+    Observable<List<KuaiDi>> getkuaidi(@Body RequestBody requestBody);
 
-    @Headers("Authorization:Basic YW5kcm9pZGNsaWVudDo4QTcyOUZENC04NjdGLTREMTItOEE4Ri1CQTNFOEQ4MzhERjM=")
-    @POST("https://watch.lemonnc.com/OAuth/Token")
+    @Headers("Authorization:YW5kcm9pZGNsaWVudDo4QTcyOUZENC04NjdGLTREMTItOEE4Ri1CQTNFOEQ4MzhERjM=")
+    @POST("https://192.168.0.3/OAuth/Token")
     @FormUrlEncoded
     Observable<BaseDataResponse<TokenResponse>> getToken(@Field("grant_type") String grant_type);
 
     @POST("guardian/login")
     Observable<BaseDataResponse<UserInfo>> login2(@Body LoginRequest requestBody);
 
-    @POST("http://40.73.116.12:8009/LMService/Health/Medical/TCM_Callback")
+    @POST("gsegserf")
     Observable<ResponseBody> test();
 }

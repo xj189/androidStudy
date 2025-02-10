@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="false"
     android:gravity="center_horizontal"
-    android:background="@color/white"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="50dp">
+    android:paddingTop="50dp"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <ScrollView
         android:id="@+id/login_form"

@@ -13,6 +13,7 @@ import example.dialog.DialogActivity
 import example.dialog.WheelActivity
 import example.gesture.XXRefreshActivity
 import example.viewPagerBanner.BannerActivity
+import missing.namespace.databinding.FragmentHome1Binding
 
 class CustomViewFragment : BaseNoPagerLazyRefreshFragment() {
 

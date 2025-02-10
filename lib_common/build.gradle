@@ -42,11 +42,11 @@ dependencies {
     api 'org.simple:androideventbus:1.0.5.1'
     api "com.alibaba:fastjson:$json_version"
     api "com.google.code.gson:gson:$gson_version"
-    api "io.reactivex.rxjava2:rxjava:$rxjava_version"
-    api "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
-    api 'com.squareup.retrofit2:retrofit:2.6.0'
+    api "io.reactivex.rxjava3:rxjava:$rxjava_version"
+    api "io.reactivex.rxjava3:rxandroid:$rxandroid_version"
+    api 'com.squareup.retrofit2:retrofit:2.9.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
-    api "com.squareup.okhttp3:okhttp:3.14.1"
+    api "com.squareup.okhttp3:okhttp:4.12.0"
     api 'com.squareup.okhttp3:logging-interceptor:3.14.1'
     //如果主Module的布局文件里面使用了库工程依赖的自定义view，必须用api方式，否则报databinding错误且不会指明具体错误.
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
