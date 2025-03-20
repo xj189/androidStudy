@@ -11,6 +11,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
+    namespace "com.style.app.MyApp"
     compileSdkVersion ANDROID_COMPILE_SDK_VERSION
     //buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
     defaultConfig {
@@ -112,6 +113,7 @@ android {
         abortOnError false
     }
     buildFeatures {
+        buildConfig true
         dataBinding true
         viewBinding true
         flavorDimensions = ["model", "version"]
@@ -144,7 +146,6 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.android:flexbox:1.0.0'
     implementation "com.google.code.gson:gson:$gson_version"
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     //java注解

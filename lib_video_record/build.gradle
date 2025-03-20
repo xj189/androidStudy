@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace "com.style.lib.media.video"
     compileSdkVersion ANDROID_COMPILE_SDK_VERSION
     defaultConfig {
         minSdkVersion ANDROID_MIN_SDK_VERSION

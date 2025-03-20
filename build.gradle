@@ -6,8 +6,10 @@ buildscript {
     ext.kotlin_version = '1.6.10'
 
     repositories {
+        maven {
+            url "https://maven.aliyun.com/nexus/content/repositories/releases"
+        }
         google()
-        jcenter()
         mavenCentral()
     }
 
@@ -20,12 +22,11 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             url "https://maven.aliyun.com/nexus/content/repositories/releases"
         }
         maven { url "https://jitpack.io" }
-
     }
     configurations.all {
         resolutionStrategy {

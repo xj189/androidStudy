@@ -22,19 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * 自定义部分滚动View
- */
-
 public class HeartLineChart extends View {
     private final String TAG = this.getClass().getSimpleName();
-
+    private Paint mAxisPaint;
+    private TextPaint mLabelYPaint;
+    private TextPaint mLabelXPaint;
+    private Paint mChartPaint;
     //图表线宽度
     private int lineWidth = 2;
     private Path mLinePath;
-    private Paint mChartPaint;
-    private TextPaint mLabelXPaint;
-    private TextPaint mLabelYPaint;
     //图表线颜色
     private int lineColor = 0xFF45CE7B;
     private int colorLabelY = 0xffaaaaaa;
@@ -42,13 +38,10 @@ public class HeartLineChart extends View {
     //坐标文本高度
     private float labelXHeight, labelYHeight;
     private int mViewHeight, mViewWidth;
-    //边距
-    private float mPaddingTop = 15, mPaddingBottom = 30, mPaddingLeft = 40, mPaddingRight = 15;
-    //网格宽高
+    private float mPaddingTop = 15, mPaddingBottom = 30,
+            mPaddingLeft = 40, mPaddingRight = 15, mInnerPadding = 15;
     private float mYaxisHeight, mXaxisWidth;
-    //纵坐标文本高度
     private float mYTextWidth;
-    //横坐标间隔
     private float mIntervalWidth;
 
     private static final float DEFAULT_MIN = 40F;
@@ -57,13 +50,7 @@ public class HeartLineChart extends View {
     private static final float DEFAULT_MAX_SECOND = 200F;
     private float yMin = DEFAULT_MIN;
     private float yMax = DEFAULT_MAX;
-
     private ArrayList<HeartLineItem> mItemList = new ArrayList<>();
-    private ArrayList<Integer> mIndexList = new ArrayList<>();
-    //左绘制边界
-    private float leftDrawOffset;
-    //右绘制边界
-    private float rightDrawOffset;
 
     public HeartLineChart(Context context) {
         this(context, null);
@@ -81,21 +68,29 @@ public class HeartLineChart extends View {
         mPaddingBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mPaddingBottom, getResources().getDisplayMetrics());
         mPaddingLeft = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mPaddingLeft, getResources().getDisplayMetrics());
         mPaddingRight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mPaddingRight, getResources().getDisplayMetrics());
+        mInnerPadding = dp2px(context, mInnerPadding);
         lineWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, lineWidth, getResources().getDisplayMetrics());
         mIntervalWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, getResources().getDisplayMetrics());
-        mMinOffset = -2 * mIntervalWidth;
         mLinePath = new Path();
         initPaint(context);
     }
 
     private void initPaint(Context context) {
+        mAxisPaint = new Paint();
+        mAxisPaint.setAntiAlias(true);
+        mAxisPaint.setStyle(Paint.Style.STROKE);
+        mAxisPaint.setDither(true);
+        mAxisPaint.setShader(null);
+        mAxisPaint.setStrokeWidth(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.5f, getResources().getDisplayMetrics()));
+        mAxisPaint.setColor(colorGrid);
+
         mLabelYPaint = new TextPaint();
         mLabelYPaint.setAntiAlias(true);
         mLabelYPaint.setTextAlign(Paint.Align.CENTER);
         mLabelYPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
         mLabelYPaint.setColor(colorLabelY);
         labelYHeight = mLabelYPaint.getFontMetrics().bottom - mLabelYPaint.getFontMetrics().top;
-        mYTextWidth = mLabelYPaint.measureText("200");
+        mYTextWidth = mLabelYPaint.measureText("999");
 
         mLabelXPaint = new TextPaint(mLabelYPaint);
         mLabelXPaint.setColor(colorLabelY);
@@ -115,12 +110,10 @@ public class HeartLineChart extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mViewWidth = MeasureSpec.getSize(widthMeasureSpec);
         mViewHeight = MeasureSpec.getSize(heightMeasureSpec);
-        mXaxisWidth = mViewWidth;
+        mXaxisWidth = mViewWidth - mPaddingLeft - mPaddingRight;
         mYaxisHeight = mViewHeight - mPaddingTop - mPaddingBottom;
-        leftDrawOffset = -mIntervalWidth * 2;
-        rightDrawOffset = mViewWidth + mIntervalWidth * 2;
         Log.e(TAG, "onMeasure--" + mViewWidth + "  " + mViewHeight);
-        setMeasuredDimension(mViewWidth, heightMeasureSpec);
+        setMeasuredDimension(mViewWidth, mViewHeight);
     }
 
     @Override
@@ -130,38 +123,97 @@ public class HeartLineChart extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        drawGridsAndYLabel(canvas);
         drawPolyAndXLabel(canvas);
+    }
+
+    private void drawGridsAndYLabel(Canvas canvas) {
+        canvas.drawColor(Color.WHITE);
+        canvas.save();
+        canvas.translate(mPaddingLeft, mPaddingTop);
+        //画竖线
+        float xGridWidth = mXaxisWidth / 4;
+        for (int i = 0; i <= 4; i++) {
+            canvas.drawLine(xGridWidth * i, 0, xGridWidth * i, mYaxisHeight, mAxisPaint);
+        }
+        //画横线
+        float yGridHeight = mYaxisHeight / 4;
+        for (int i = 0; i <= 4; i++) {
+            int y = (int) (yGridHeight * i);
+            canvas.drawLine(0, y, mXaxisWidth, y, mAxisPaint);
+            int yLabel = (int) (yMax - (yMax - yMin) / 4 * i);
+            canvas.drawText(String.valueOf(yLabel), -mPaddingLeft / 2, y + labelYHeight / 3, mLabelYPaint);
+        }
+        canvas.restore();
     }
 
     private void drawPolyAndXLabel(Canvas canvas) {
         if (mItemList.size() <= 1) {
             return;
         }
-        mIndexList.clear();
-        for (int i = 0; i < mItemList.size(); i++) {
-            float x = (mIntervalWidth + mIntervalWidth * i) - mOffset;
-            if (x > mMinOffset && x < mMaxOffset)
-                mIndexList.add(i);
-            if (x > mMaxOffset)
-                break;
-        }
-        canvas.save();
-        canvas.translate(0, mPaddingTop + mYaxisHeight);
         mLinePath.reset();
-        float x, y;
-        for (int i = 0; i < mIndexList.size(); i++) {
-            x = (mIntervalWidth + mIntervalWidth * mIndexList.get(i)) - mOffset;
-            int yValue = mItemList.get(mIndexList.get(i)).yValue;
-            y = -(mYaxisHeight * (yValue - yMin)) / (yMax - yMin);
-            if (i == 0) {
-                mLinePath.moveTo(x, y);
-            } else {
-                mLinePath.lineTo(x, y);
+        canvas.save();
+        canvas.translate(mPaddingLeft + mInnerPadding, mPaddingTop + mYaxisHeight);
+        int a0 = (int) (Math.abs(mOffset)) / (int) (mIntervalWidth);
+        int b0 = (int) (Math.abs(mOffset)) % (int) (mIntervalWidth);
+        int a1 = (int) (Math.abs(mOffset) + (mXaxisWidth - mInnerPadding * 2)) / (int) (mIntervalWidth);
+        int b1 = (int) (Math.abs(mOffset) + (mXaxisWidth - mInnerPadding * 2)) % (int) (mIntervalWidth);
+        for (int i = 0; i < mItemList.size(); i++) {
+             if (a0 == i) {
+                int v1 = mItemList.get(i).yValue;
+                int y1 = (int) (-mYaxisHeight * (v1 - yMin) / (yMax - yMin));
+                if (0 != b0) {
+                    int v2 = mItemList.get(i + 1).yValue;
+                    int y2 = (int) (-mYaxisHeight * (v2 - yMin) / (yMax - yMin));
+                    int y = (int) ((y1 - y2) * (mIntervalWidth - b0) / mIntervalWidth) + y2;
+                    mLinePath.moveTo(0, y);
+                } else {
+                    mLinePath.moveTo(0, y1);
+                    if (i % 5 == 0)
+                        canvas.drawText(mItemList.get(i).xLabel, 0, mPaddingBottom / 2 + getBaseLine2CenterY(mLabelXPaint.getFontMetrics()), mLabelXPaint);
+                }
+                continue;
             }
-            if (mIndexList.get(i) % 5 == 0)
-                canvas.drawText(mItemList.get(mIndexList.get(i)).xLabel, x, mPaddingBottom / 2 + getBaseLine2CenterY(mLabelXPaint.getFontMetrics()), mLabelXPaint);
-
+            if ((a0 < i && i <= a1) || (a1 == i && 0 == b1)) {
+                int v2 = mItemList.get(i).yValue;
+                int y2 = (int) (-mYaxisHeight * (v2 - yMin) / (yMax - yMin));
+                if (0 != b0) {
+                    mLinePath.lineTo(mIntervalWidth - a0 + mIntervalWidth * (i - a0 - 1), y2);
+                    if (i % 5 == 0)
+                        canvas.drawText(mItemList.get(i).xLabel, mIntervalWidth - a0 + mIntervalWidth * (i - a0 - 1), mPaddingBottom / 2 + getBaseLine2CenterY(mLabelXPaint.getFontMetrics()), mLabelXPaint);
+                } else {
+                    mLinePath.lineTo(mIntervalWidth * (i - a0 - 1), y2);
+                    if (i % 5 == 0)
+                        canvas.drawText(mItemList.get(i).xLabel, mIntervalWidth * (i - a0 - 1), mPaddingBottom / 2 + getBaseLine2CenterY(mLabelXPaint.getFontMetrics()), mLabelXPaint);
+                }
+                continue;
+            }
+            if (a1 == i) {
+                int v1 = mItemList.get(i).yValue;
+                int y1 = (int) (-mYaxisHeight * (v1 - yMin) / (yMax - yMin));
+                int v2 = mItemList.get(i + 1).yValue;
+                int y2 = (int) (-mYaxisHeight * (v2 - yMin) / (yMax - yMin));
+                int y = (int) ((y1 - y2) * b0 / mIntervalWidth) + y1;
+                mLinePath.lineTo(mXaxisWidth - mInnerPadding * 2, y);
+                if (i % 5 == 0)
+                    canvas.drawText(mItemList.get(i).xLabel, mXaxisWidth - mInnerPadding * 2, mPaddingBottom / 2 + getBaseLine2CenterY(mLabelXPaint.getFontMetrics()), mLabelXPaint);
+                break;
+            }
         }
+//        float x, y;
+//        for (int i = 0; i < mIndexList.size(); i++) {
+//            x = (mIntervalWidth + mIntervalWidth * mIndexList.get(i)) - mOffset;
+//            int yValue = mItemList.get(mIndexList.get(i)).yValue;
+//            y = -(mYaxisHeight * (yValue - yMin)) / (yMax - yMin);
+//            if (i == 0) {
+//                mLinePath.moveTo(x, y);
+//            } else {
+//                mLinePath.lineTo(x, y);
+//            }
+//            if (mIndexList.get(i) % 5 == 0)
+//                canvas.drawText(mItemList.get(mIndexList.get(i)).xLabel, x, mPaddingBottom / 2 + getBaseLine2CenterY(mLabelXPaint.getFontMetrics()), mLabelXPaint);
+//
+//        }
         canvas.drawPath(mLinePath, mChartPaint);
         canvas.restore();
     }
@@ -190,10 +242,9 @@ public class HeartLineChart extends View {
             }
             mItemList.addAll(list);
         }
-        mMaxOffset = (int) (mIntervalWidth * (mItemList.size() - 1) - mIntervalWidth * (mViewWidth / mIntervalWidth - 2));
-        mMaxOffset = Math.max(mMaxOffset, 0);
+        mMinOffset = (int) -(mIntervalWidth * (mItemList.size() - 1) - (mXaxisWidth - mInnerPadding * 2));
+        mMinOffset = Math.min(mMinOffset, 0);
         mOffset = 0;
-        Log.e(TAG, "mMaxOffset = " + mMaxOffset);
         requestLayout();
         invalidate();
     }
@@ -215,7 +266,7 @@ public class HeartLineChart extends View {
         return list;
     }
 
-    private float mMaxOffset = 0, mMinOffset = 0, mOffset = 0;
+    private float mMinOffset = 0, mOffset = 0;
     private float mLastX;
     private boolean mCanRefresh;
     private Scroller mScroller;
@@ -249,14 +300,11 @@ public class HeartLineChart extends View {
                 if (mIsBeingDragged)
                     if (getParent() != null) getParent().requestDisallowInterceptTouchEvent(true);
 
-                if (mIsBeingDragged && mMinOffset < 0) {
+                if (mIsBeingDragged) {
                     float rawXMove = event.getX();
-                    // 计算偏移量
                     float offsetX = rawXMove - mLastX;
-                    // 在当前偏移量的基础上增加偏移量
-                    mOffset -= offsetX;
+                    mOffset += offsetX;
                     refresh();
-                    // 偏移量修改后下次重绘会有变化
                     mLastX = rawXMove;
                 }
                 break;
@@ -265,12 +313,11 @@ public class HeartLineChart extends View {
                     // 计算速度的单位时间,最大速度为5px/ms
                     velocityTracker.computeCurrentVelocity(1, 5);
                     float mVelocityX = velocityTracker.getXVelocity();
-                    // 计算完成后回收内存
                     velocityTracker.clear();
                     //velocityTracker.recycle();
                     Log.e(TAG, "mVelocityX = " + mVelocityX + " px/ms");
                     //偏移量已经是边界时不用再计算滚动逻辑
-                    if (mOffset > 0 && mOffset < mMaxOffset && mVelocityX != 0) {
+                    if (mOffset < 0 && mOffset > mMinOffset && mVelocityX != 0) {
                         float dis;//速度越大滚动距离理应越大,假设速度为5px/ms时，最大滑动位移3000px，设置花费时间为2000ms。以此为标准.速度越大，位移越大，时间越长。
                         int duration;
                         dis = mVelocityX / (5f / 3000f);
@@ -280,7 +327,7 @@ public class HeartLineChart extends View {
                             int endX = (int) (mOffset - dis);
                             Log.e(TAG, "duration--2 = " + duration);
                             //scroller.getCurrX() = mStartX + Math.round(scale * dx);  scale等于从0逐渐增大到1.
-                            mScroller.startScroll((int) mOffset, 0, (int) -dis, 0, Math.max(duration, 500));//duration太小会有跳动效果，不平滑
+                            mScroller.startScroll((int) mOffset, 0, (int) dis, 0, Math.max(duration, 500));//duration太小会有跳动效果，不平滑
                         }
                     }
                 }
@@ -302,14 +349,14 @@ public class HeartLineChart extends View {
         }
     }
 
-    /**
-     * 对偏移量进行边界值判定
-     */
     private void refresh() {
         if (mItemList.size() <= 1) {
             return;
         }
-        mOffset = Math.min(Math.max(mOffset, 0), mMaxOffset);
+        if (mIntervalWidth * (mItemList.size() - 1) <= mXaxisWidth - mInnerPadding * 2) {
+            mOffset = 0;
+        }
+        mOffset = Math.max(Math.min(mOffset, 0), mMinOffset);
         invalidate();
     }
 
@@ -322,5 +369,10 @@ public class HeartLineChart extends View {
             this.yValue = yValue;
             this.xLabel = xLabel;
         }
+    }
+
+    public static int dp2px(Context context, float dpValue) {
+        float pxValue = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.getResources().getDisplayMetrics());
+        return (int) (pxValue + 0.5f);//0.5f是为了四舍五入，但有时候四舍五入不一定就好
     }
 }
