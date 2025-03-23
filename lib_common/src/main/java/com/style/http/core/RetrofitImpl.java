@@ -61,12 +61,9 @@ public final class RetrofitImpl {
     }
 
     //日志拦截器
-    public static HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-        @Override
-        public void log(String message) {
-            if (BuildConfig.DEBUG)
-                Log.e("okhttp", message);
-        }
+    public static HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> {
+        if (BuildConfig.DEBUG)
+            Log.e("okhttp", message);
     }).setLevel(HttpLoggingInterceptor.Level.BODY);//设置打印数据的级别
 
 

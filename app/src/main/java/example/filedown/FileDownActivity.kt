@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.style.base.BaseRecyclerViewAdapter
 import com.style.base.BaseTitleBarActivity
 import com.style.config.FileDirConfig
@@ -20,9 +21,6 @@ import com.style.framework.databinding.FileDownListActivityBinding
 import com.style.service.fileDownload.FileDownloadService
 import com.style.utils.OpenFileUtil
 import com.style.view.diviver.DividerItemDecoration
-import org.simple.eventbus.EventBus
-import org.simple.eventbus.Subscriber
-import org.simple.eventbus.ThreadMode
 import java.io.File
 
 
@@ -92,7 +90,11 @@ class FileDownActivity : BaseTitleBarActivity() {
             }
         })
         bd.viewBatchDownload.setOnClickListener { batchDownload() }
-        EventBus.getDefault().register(this)
+        LiveEventBus.get(EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED, FileDownloadStateBean::class.java)
+            .observe(this) {
+                it ->
+                onFileDownloadStateChanged(it)
+            }
         mViewModel = ViewModelProvider(this).get(FileDownListViewModel::class.java)
         mViewModel.files.observe(this, Observer<ArrayList<CustomFileBean>> { t ->
             refreshData(t)
@@ -151,7 +153,6 @@ class FileDownActivity : BaseTitleBarActivity() {
         }
     }
 
-    @Subscriber(tag = EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED, mode = ThreadMode.MAIN)
     private fun onFileDownloadStateChanged(f: FileDownloadStateBean) {
         for (i in dataList.indices) {
             if (dataList[i].url.equals(f.url)) {
@@ -179,7 +180,6 @@ class FileDownActivity : BaseTitleBarActivity() {
     }
 
     override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
         super.onDestroy()
         MultiThreadDownloadManager.getInstance().cancelCallback(TAG)
     }

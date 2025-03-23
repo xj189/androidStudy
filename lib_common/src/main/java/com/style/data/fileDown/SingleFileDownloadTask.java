@@ -2,13 +2,12 @@ package com.style.data.fileDown;
 
 import android.util.Log;
 
+import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.style.data.app.AppActivityManager;
 import com.style.data.db.AppDatabase;
 import com.style.data.db.FileDownloadStateDao;
 import com.style.data.event.EventBusEvent;
 import com.style.data.fileDown.FileDownloadStateBean.DownStatus;
-
-import org.simple.eventbus.EventBus;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -126,7 +125,7 @@ public class SingleFileDownloadTask implements Runnable {
         } else {//更新数据
             getFileDownloadDao().update(b.getStatus(), b.getDownloadSize(), b.getUrl());
         }
-        EventBus.getDefault().post(b, EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED);
+        LiveEventBus.get(EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED).post(b);
     }
 
     /**
@@ -140,7 +139,7 @@ public class SingleFileDownloadTask implements Runnable {
         b.setTotalSize(this.fileLength);
         b.setDownloadSize(this.downloadLength);
         getFileDownloadDao().update(b);
-        EventBus.getDefault().post(b, EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED);
+        LiveEventBus.get(EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED).post(b);
     }
 
     /**
@@ -152,7 +151,7 @@ public class SingleFileDownloadTask implements Runnable {
         b.setTotalSize(this.fileLength);
         b.setDownloadSize(this.fileLength);
         getFileDownloadDao().update(b);
-        EventBus.getDefault().post(b, EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED);
+        LiveEventBus.get(EventBusEvent.FILE_DOWNLOAD_STATE_CHANGED).post(b);
     }
 
 }

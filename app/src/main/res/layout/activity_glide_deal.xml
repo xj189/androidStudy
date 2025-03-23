@@ -8,13 +8,12 @@
 
     <include layout="@layout/title_bar_default" />
 
-    <com.google.android.flexbox.FlexboxLayout
+    <LinearLayout
         android:id="@+id/fbl_brand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        app:flexWrap="wrap"
-        app:showDivider="middle">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_circle"
@@ -51,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="缩略图" />
-    </com.google.android.flexbox.FlexboxLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_avatar"

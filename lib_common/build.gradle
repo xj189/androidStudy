@@ -25,11 +25,15 @@ android {
         }
     }
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
@@ -40,7 +44,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     api 'androidx.room:room-runtime:2.3.0'
     kapt 'androidx.room:room-compiler:2.3.0'
-    api 'org.simple:androideventbus:1.0.5.1'
     api "com.alibaba:fastjson:$json_version"
     api "com.google.code.gson:gson:$gson_version"
     api "io.reactivex.rxjava3:rxjava:$rxjava_version"
@@ -50,10 +53,9 @@ dependencies {
     api "com.squareup.okhttp3:okhttp:4.12.0"
     api 'com.squareup.okhttp3:logging-interceptor:3.14.1'
     //如果主Module的布局文件里面使用了库工程依赖的自定义view，必须用api方式，否则报databinding错误且不会指明具体错误.
-    //api 'com.scwang.smartrefresh:smartrefresh-layout:1.2.0'
     api 'io.github.scwang90:refresh-layout-kernel:3.0.0-alpha'
-    implementation 'com.github.jeremyliao:liveeventbus:2.4.0'
-    implementation project(':lib_custom_view')
+    api 'io.github.jeremyliao:live-event-bus-x:1.8.0'
+    api project(':lib_custom_view')
 
 }
 

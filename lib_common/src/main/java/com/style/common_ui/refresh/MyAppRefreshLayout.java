@@ -5,8 +5,8 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.constant.RefreshState;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.constant.RefreshState;
 import com.style.lib.common.R;
 
 public class MyAppRefreshLayout extends SmartRefreshLayout {
@@ -14,7 +14,7 @@ public class MyAppRefreshLayout extends SmartRefreshLayout {
         // 指定全局的Header
         SmartRefreshLayout.setDefaultRefreshHeaderCreator((context, layout) -> {
             layout.setPrimaryColorsId(R.color.pull_refresh_bg, R.color.pull_refresh_text);//全局设置主题颜色
-            return new SimpleRefreshHeader(context);
+            return (com.scwang.smart.refresh.layout.api.RefreshHeader) new SimpleRefreshHeader(context);
         });
         // 指定全局的footer
         SmartRefreshLayout.setDefaultRefreshFooterCreator((context, layout) -> {
@@ -37,19 +37,8 @@ public class MyAppRefreshLayout extends SmartRefreshLayout {
         initView();
     }
 
-    public MyAppRefreshLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initView();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MyAppRefreshLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initView();
-    }
-
     private void initView() {
-        setEnableFooterFollowWhenLoadFinished(true);
+        setEnableClipFooterWhenFixedBehind(true);
 
     }
 
@@ -75,8 +64,8 @@ public class MyAppRefreshLayout extends SmartRefreshLayout {
      */
     @Override
     public SmartRefreshLayout finishRefresh() {
-        long passTime = System.currentTimeMillis() - mLastRefreshingTime;
-        return finishRefresh(Math.max(0, 500 - (int) passTime));//保证刷新动画有1000毫秒的时间
+        long passTime = System.currentTimeMillis() - mLastOpenTime;
+        return (SmartRefreshLayout) finishRefresh(Math.max(0, 500 - (int) passTime));//保证刷新动画有1000毫秒的时间
     }
 
     /**
@@ -86,7 +75,7 @@ public class MyAppRefreshLayout extends SmartRefreshLayout {
      */
     @Override
     public SmartRefreshLayout finishLoadMore() {
-        long passTime = System.currentTimeMillis() - mLastLoadingTime;
-        return finishLoadMore(Math.max(0, 500 - (int) passTime));//保证加载动画有1000毫秒的时间
+        long passTime = System.currentTimeMillis() - mLastOpenTime;
+        return (SmartRefreshLayout) finishLoadMore(Math.max(0, 500 - (int) passTime));//保证加载动画有1000毫秒的时间
     }
 }

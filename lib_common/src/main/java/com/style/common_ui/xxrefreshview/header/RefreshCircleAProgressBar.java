@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.style.common_ui.xxrefreshview.Utils;
-import com.style.lib.common.R;
+import com.style.lib_custom_view.R;
 
 public class RefreshCircleAProgressBar extends BaseProgressBar {
     private Paint paint;

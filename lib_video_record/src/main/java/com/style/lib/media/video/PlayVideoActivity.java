@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -94,7 +95,11 @@ public class PlayVideoActivity extends AppCompatActivity {
         } catch (Exception ex) {
             Log.e(TAG, "MediaMetadataRetriever exception " + ex);
         } finally {
-            mmr.release();
+            try {
+                mmr.release();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

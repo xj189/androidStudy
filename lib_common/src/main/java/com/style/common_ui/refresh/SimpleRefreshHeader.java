@@ -1,5 +1,8 @@
 package com.style.common_ui.refresh;
 
+import static com.scwang.smart.refresh.layout.constant.RefreshState.PullDownToRefresh;
+import static com.scwang.smart.refresh.layout.constant.RefreshState.ReleaseToRefresh;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
@@ -13,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
-import com.scwang.smartrefresh.layout.api.RefreshKernel;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.constant.RefreshState;
-import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smart.refresh.layout.api.RefreshHeader;
+import com.scwang.smart.refresh.layout.api.RefreshKernel;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.RefreshState;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.style.common_ui.xxrefreshview.header.RefreshCircleAProgressBar;
 import com.style.lib.common.R;
 
@@ -88,7 +91,7 @@ public class SimpleRefreshHeader extends RelativeLayout implements RefreshHeader
     }
 
     @Override
-    public void onPulling(float percent, int offset, int height, int extendHeight) {
+    public void onMoving(boolean isDragging, float percent, int offset, int height, int maxDragHeight) {
         Log.e(TAG, "onPulling percent--" + percent + "  offset--" + offset);
         progressBar.setmIndeterminate(false);
         mStartAngle = -offset / distanceOfAngle % 360;
@@ -96,9 +99,8 @@ public class SimpleRefreshHeader extends RelativeLayout implements RefreshHeader
     }
 
     @Override
-    public void onReleasing(float percent, int offset, int height, int extendHeight) {
-        Log.e(TAG, "onReleasing percent--" + height + "  offset--" + offset);
-
+    public boolean autoOpen(int duration, float dragRate, boolean animationOnly) {
+        return false;
     }
 
     @Override
