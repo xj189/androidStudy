@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.text.TextPaint;
@@ -122,7 +123,7 @@ public class HeartLineChart extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         drawGridsAndYLabel(canvas);
         drawPolyAndXLabel(canvas);
     }
@@ -302,10 +303,8 @@ public class HeartLineChart extends View {
 
                 if (mIsBeingDragged) {
                     float rawXMove = event.getX();
-                    float offsetX = rawXMove - mLastX;
-                    mOffset += offsetX;
+                    mOffset = rawXMove - mLastX;
                     refresh();
-                    mLastX = rawXMove;
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -359,7 +358,6 @@ public class HeartLineChart extends View {
         mOffset = Math.max(Math.min(mOffset, 0), mMinOffset);
         invalidate();
     }
-
 
     public static class HeartLineItem {
         public int yValue;
