@@ -223,7 +223,6 @@ public class HeartLineChart extends View {
     private float mLeft = 0, mMaxOffset = 0, mOffset = 0;
     private float mLastX;
     private Scroller mScroller;
-    // 速度追踪
     private VelocityTracker velocityTracker = VelocityTracker.obtain();
     private float mTouchSlop = 5, mTouchDownX, mTouchDownY, mTouchMoveX, mTouchMoveY;
     private boolean mIsBeingDragged = false;
@@ -232,9 +231,9 @@ public class HeartLineChart extends View {
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         Log.e(TAG, "onTouchEvent   " + action);
-        velocityTracker.addMovement(event);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                velocityTracker.clear();
                 mTouchDownX = event.getX();
                 mTouchDownY = event.getY();
                 mLastX = event.getX();
@@ -253,6 +252,7 @@ public class HeartLineChart extends View {
                     if (getParent() != null) getParent().requestDisallowInterceptTouchEvent(true);
 
                 if (mIsBeingDragged) {
+                    velocityTracker.addMovement(event);
                     int rawXMove = (int) event.getX();
                     int move = (int) (mLastX - rawXMove);
                     mOffset += move;
@@ -262,22 +262,19 @@ public class HeartLineChart extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (mIsBeingDragged) {
-                    // 计算速度的单位时间,最大速度为5px/ms
-                    velocityTracker.computeCurrentVelocity(1, 5);
+                    velocityTracker.addMovement(event);
+                    velocityTracker.computeCurrentVelocity(10, 50);
                     float mVelocityX = velocityTracker.getXVelocity();
-                    velocityTracker.clear();
-                    //velocityTracker.recycle();
                     Log.e(TAG, "mVelocityX = " + mVelocityX + " px/ms");
-                    //偏移量已经是边界时不用再计算滚动逻辑
                     if (mOffset > 0 && mOffset < mMaxOffset && mVelocityX != 0) {
-                        float dis;//速度越大滚动距离理应越大,假设速度为5px/ms时，最大滑动位移3000px，设置花费时间为2000ms。以此为标准.速度越大，位移越大，时间越长。
+                        float dis;//速度越大位移越大消耗时间越长,假设速度是50px/10ms时，位移是3000px，时间说2000ms.
                         int duration;
                         dis = mVelocityX / (5f / 3000f);
                         duration = (int) Math.abs(mVelocityX / (5f / 2000f));
                         Log.e(TAG, "dis = " + dis + " px" + "  duration = " + duration + " ms");
                         if (dis != 0) {
-                            int endX = (int) (mOffset - dis);
-                            Log.e(TAG, "duration--2 = " + duration);
+                            //int endX = (int) (mOffset - dis);
+                            //Log.e(TAG, "duration--2 = " + duration);
                             //scroller.getCurrX() = mStartX + Math.round(scale * dx);  scale等于从0逐渐增大到1.
                             mScroller.startScroll((int) mOffset, 0, (int) -dis, 0, Math.max(duration, 500));//duration太小会有跳动效果，不平滑
                         }
