@@ -267,16 +267,13 @@ public class HeartLineChart extends View {
                     float mVelocityX = velocityTracker.getXVelocity();
                     Log.e(TAG, "mVelocityX = " + mVelocityX + " px/ms");
                     if (mOffset > 0 && mOffset < mMaxOffset && mVelocityX != 0) {
-                        float dis;//速度越大位移越大消耗时间越长,假设速度是50px/10ms时，位移是3000px，时间说2000ms.
+                        float dis;  //速度越大位移越大消耗时间越长,假设速度是5000px/1000ms时，位移是3000px，时间是2000ms.
                         int duration;
                         dis = mVelocityX / (5f / 3000f);
                         duration = (int) Math.abs(mVelocityX / (5f / 2000f));
                         Log.e(TAG, "dis = " + dis + " px" + "  duration = " + duration + " ms");
                         if (dis != 0) {
-                            //int endX = (int) (mOffset - dis);
-                            //Log.e(TAG, "duration--2 = " + duration);
-                            //scroller.getCurrX() = mStartX + Math.round(scale * dx);  scale等于从0逐渐增大到1.
-                            mScroller.startScroll((int) mOffset, 0, (int) -dis, 0, Math.max(duration, 500));//duration太小会有跳动效果，不平滑
+                            mScroller.startScroll((int) mOffset, 0, (int) -dis, 0, Math.max(duration, 500));  //duration太小会有跳动效果，不平滑
                         }
                     }
                 }
